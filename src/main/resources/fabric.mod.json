@@ -1,0 +1,31 @@
+{
+    "schemaVersion": 1,
+    "id": "muscle-memory",
+    "version": "${version}",
+    "name": "Muscle Memory",
+    "description": "Skills and permanent bonuses for Minecraft.",
+    "authors": ["Musa"],
+    "contact": {
+        "sources": "https://github.com/musa/muscle-memory"
+    },
+    "license": "MIT",
+    "icon": "assets/muscle-memory/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": ["com.musclemem.MuscleMemoryMod"],
+        "client": ["com.musclemem.client.MuscleMemoryClient"]
+    },
+    "mixins": [
+        "muscle-memory.mixins.json",
+        {
+            "config": "muscle-memory-client.mixins.json",
+            "environment": "client"
+        }
+    ],
+    "depends": {
+        "fabricloader": ">=0.18.0",
+        "minecraft": ">=26.1",
+        "java": ">=25",
+        "fabric-api": "*"
+    }
+}

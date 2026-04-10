@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:maven.fabricmc.net)",
+      "WebFetch(domain:docs.fabricmc.net)",
+      "WebFetch(domain:wiki.fabricmc.net)",
+      "WebFetch(domain:deepwiki.com)",
+      "Bash(ls /c/Users/Musa/Desktop/CLAUDE/gradlew*)",
+      "Bash(gradle --version)",
+      "Bash(jar cf:*)"
+    ]
+  }
+}

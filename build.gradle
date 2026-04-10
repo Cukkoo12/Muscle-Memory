@@ -6,7 +6,6 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
-// REQUIRED: This allows Loom to initialize configurations like 'mappings' and 'modImplementation'
 repositories {
     mavenCentral()
     maven { url = "https://maven.fabricmc.net/" }
@@ -28,13 +27,8 @@ loom {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-
-    // Direct local mapping declaration to bypass the 'layered' environment error
-    mappings(file("mappings/mappings.tiny"))
-
-    // CRITICAL: Must use 'modImplementation' so the compiler sees the ExtendedScreenHandler classes
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
 java {

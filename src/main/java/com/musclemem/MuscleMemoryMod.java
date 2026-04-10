@@ -4,15 +4,16 @@ import com.musclemem.gui.SkillScreenData;
 import com.musclemem.gui.SkillScreenHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,12 +31,10 @@ public class MuscleMemoryMod implements ModInitializer {
 
         SkillPersistence.init();
 
-        // 1. Menü tipini ExtendedScreenHandlerType olarak kaydediyoruz.
-        // Bu sayede oyun, GUI açılırken SkillScreenData.PACKET_CODEC ile veriyi paketleyip istemciye gönderir.
         SkillScreenHandler.TYPE = Registry.register(
                 BuiltInRegistries.MENU,
                 Identifier.fromNamespaceAndPath(MOD_ID, "skills"),
-                new ExtendedScreenHandlerType<>(SkillScreenHandler::new, SkillScreenData.PACKET_CODEC)
+                new ExtendedMenuType<>(SkillScreenHandler::new, SkillScreenData.PACKET_CODEC)
         );
 
         SkillEvents.register();
@@ -63,12 +62,11 @@ public class MuscleMemoryMod implements ModInitializer {
                                 ServerPlayer player = ctx.getSource().getPlayer();
                                 if (player == null) return 0;
 
-                                // 2. ExtendedScreenHandlerFactory kullanarak ekranı açıyoruz.
-                                player.openMenu(new ExtendedScreenHandlerFactory<SkillScreenData>() {
+                                SkillScreenData screenData = SkillScreenData.fromPlayer(player);
+                                player.openMenu(new ExtendedMenuProvider<SkillScreenData>() {
                                     @Override
-                                    public SkillScreenData getScreenOpeningData(ServerPlayer player) {
-                                        // Paket olarak gönderilecek veriyi burada belirliyoruz
-                                        return SkillScreenData.fromPlayer(player);
+                                    public SkillScreenData getScreenOpeningData(ServerPlayer p) {
+                                        return screenData;
                                     }
 
                                     @Override
@@ -78,8 +76,7 @@ public class MuscleMemoryMod implements ModInitializer {
 
                                     @Override
                                     public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player p) {
-                                        // Sunucu tarafında menüyü oluşturuyoruz
-                                        return new SkillScreenHandler(syncId, inv, getScreenOpeningData((ServerPlayer) p));
+                                        return new SkillScreenHandler(syncId, inv, screenData);
                                     }
                                 });
                                 return 1;

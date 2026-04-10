@@ -149,7 +149,7 @@ public final class SkillEvents {
         });
     }
 
-    private static void sendLevelUpMessage(ServerPlayer player, SkillType skill, int newLevel) {
+    public static void sendLevelUpMessage(ServerPlayer player, SkillType skill, int newLevel) {
         String stars = "★".repeat(newLevel) + "☆".repeat(3 - newLevel);
         player.sendSystemMessage(
                 Component.literal("§6§l✦ §e" + skill.getDisplayName() + " §6" + stars + " §7Level " + newLevel + "!")

@@ -1,5 +1,6 @@
 package com.musclemem.mixin;
 
+import com.musclemem.SkillData;
 import com.musclemem.SkillEvents;
 import com.musclemem.SkillPersistence;
 import com.musclemem.SkillType;
@@ -25,7 +26,11 @@ public abstract class FishingBobberEntityMixin {
         if (cir.getReturnValue() <= 0) return;
         Player owner = getPlayerOwner();
         if (owner instanceof ServerPlayer player) {
-            SkillPersistence.get(player).increment(SkillType.FISHING);
+            SkillData data = SkillPersistence.get(player);
+            if (data.increment(SkillType.FISHING)) {
+                // Eksik olan satır:
+                SkillEvents.sendLevelUpMessage(player, SkillType.FISHING, data.getLevel(SkillType.FISHING));
+            }
         }
     }
 

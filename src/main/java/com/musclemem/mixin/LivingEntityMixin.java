@@ -23,12 +23,17 @@ public abstract class LivingEntityMixin {
             SkillData data = SkillPersistence.get(player);
             if (data.increment(SkillType.JUMPING)) {
                 SkillEvents.applyFallDistanceBonus(player, data);
+                // Eksik olan satır:
+                SkillEvents.sendLevelUpMessage(player, SkillType.JUMPING, data.getLevel(SkillType.JUMPING));
             }
         }
     }
 
-    @ModifyVariable(method = "hurt", at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private float muscleMemory$modifyDamage(float amount, DamageSource source) {
+    // Hedef metodu 'hurtServer' olarak güncelledik.
+    // Yeni sistemde bu metot fazladan bir 'ServerLevel' parametresi alır,
+    // bu yüzden argsOnly = true ile gelen parametre listemize 'level' nesnesini de ekledik.
+    @ModifyVariable(method = "hurtServer", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+    private float muscleMemory$modifyDamage(float amount, net.minecraft.server.level.ServerLevel level, DamageSource source) {
         LivingEntity self = (LivingEntity) (Object) this;
 
         if (source.getEntity() instanceof ServerPlayer player) {
@@ -38,8 +43,7 @@ public abstract class LivingEntityMixin {
             double mobMultiplier = SkillEvents.getMobKillDamageMultiplier(player, self);
             modified *= (float) mobMultiplier;
 
-            // Arrow damage bonus — use DamageType tag instead of AbstractArrow instanceof
-            // (class hierarchy may shift between MC versions; tag is stable)
+            // Arrow damage bonus
             if (source.is(DamageTypes.ARROW)) {
                 double bowMultiplier = SkillEvents.getBowDamageMultiplier(player);
                 modified *= (float) bowMultiplier;

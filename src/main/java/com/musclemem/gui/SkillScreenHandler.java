@@ -10,14 +10,9 @@ import net.minecraft.world.item.ItemStack;
 public class SkillScreenHandler extends AbstractContainerMenu {
 
     public static MenuType<SkillScreenHandler> TYPE;
-    public static SkillScreenData lastOpenedData = null;
     private final SkillScreenData data;
 
-    public SkillScreenHandler(int syncId, Inventory playerInventory) {
-        super(TYPE, syncId);
-        this.data = lastOpenedData != null ? lastOpenedData : new SkillScreenData(new java.util.EnumMap<>(SkillType.class));
-    }
-
+    // Yalnızca ağ paketinden (packet) gelen datayı kabul eden yapıcı metot
     public SkillScreenHandler(int syncId, Inventory playerInventory, SkillScreenData data) {
         super(TYPE, syncId);
         this.data = data;
